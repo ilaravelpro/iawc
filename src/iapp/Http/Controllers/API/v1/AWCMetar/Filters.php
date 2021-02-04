@@ -17,11 +17,6 @@ trait Filters
                 'type' => 'text',
             ],
         ];
-        $this->requestFilter($request, $model, $parent, $filters, $operators);
-        if ($request->q) {
-            $this->searchQ($request, $model, $parent);
-            $current['q'] = $request->q;
-        }
         $this->filterWithSTED($request, $model, $parent, $filters, $operators);
         return [$filters, $current, $operators];
     }

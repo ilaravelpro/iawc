@@ -14,6 +14,5 @@ class AWCMetarController extends Controller
         AWCMetar\Rules,
         AWCMetar\RequestData,
         AWCMetar\FilterWithSTED,
-        AWCMetar\Filters,
-        AWCMetar\SearchQ;
+        AWCMetar\Filters;
 }

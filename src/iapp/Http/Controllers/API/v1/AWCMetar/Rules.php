@@ -6,7 +6,7 @@ use iLaravel\Core\iApp\Http\Requests\iLaravel as Request;
 
 trait Rules
 {
-    public function rules(Request $request, $action, $parent = null, $unique = null)
+    public function rules(Request $request, $action, $parent = null)
     {
         $rules = [];
         switch ($action) {
@@ -14,8 +14,6 @@ trait Rules
                 $rules = [];
                 break;
         }
-        $unique = $request->has('unique') ? $request->unique : $unique;
-        if ($unique) return str_replace(['required'], ['nullable'], _get_value($rules, $unique, 'nullable|string'));
         return $rules;
     }
 }
