@@ -1,4 +1,9 @@
 <?php
+/**
+ * Author: Amir Hossein Jahani | iAmir.net
+ * Last modified: 11/28/20, 4:22 PM
+ * Copyright (c) 2021. Powered by iamir.net
+ */
 
 namespace iLaravel\iAWC\iApp\Http\Controllers\API\v1\AWCTaf;
 
