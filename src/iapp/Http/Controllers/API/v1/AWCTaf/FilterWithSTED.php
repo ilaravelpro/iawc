@@ -21,25 +21,35 @@ trait FilterWithSTED
             'startTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
             'endTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
         ]);
-        $check = $this->model::where(function ($query) use ($request, $start_time, $end_time) {
+        $stations = explode(',', $request->stationString);
+        $check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
             if ($start_time) $query->orWhere('start_at', '>', $start_time);
             if ($end_time) $query->where('end_at', '<', $end_time);
-            if ($request->stationString) $query->whereIn('station', explode(' ', $request->stationString));
+            if ($request->stationString) $query->whereIn('station', $stations);
             return $query;
         });
-        if (!$check->count()) {
+        if ($check->get()->groupBy('station')->count() < count($stations)) {
             $params = $request->all();
             if (isset($params['startTime'])) $params['startTime'] = Carbon::parse($params['startTime'])->timestamp;
             if (isset($params['endTime'])) $params['endTime'] = Carbon::parse($params['endTime'])->timestamp;
             $params['format'] = 'model';
+            unset($params['limited']);
             (new AviationWeather("tafs", $params))->get();
         }
-        $model->where(function ($query) use ($request, $start_time, $end_time) {
+        $model->where(function ($query) use ($request, $start_time, $end_time, $stations) {
             if ($start_time) $query->orWhere('start_at', '>', $start_time);
             if ($end_time) $query->where('end_at', '<', $end_time);
-            if ($request->stationString) $query->whereIn('station', explode(' ', $request->stationString));
+            if ($request->stationString) $query->whereIn('station', $stations);
             return $query;
         });
-        $model->orderBy('start_at', 'asc');
+        if ($request->limited)
+            foreach ($stations as $index => $station) {
+                if ($mstation = $this->model::where('station', $station)->orderBy('start_at', 'desc')->first())
+                    $stations[$index] = $mstation->id;
+                else
+                    unset($stations[$index]);
+            }
+        $model->whereIn('id', $stations);
+        $model->orderBy('start_at', 'desc');
     }
 }

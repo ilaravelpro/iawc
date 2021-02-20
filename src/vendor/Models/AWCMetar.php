@@ -78,7 +78,7 @@ class AWCMetar extends Modal
         if ((string)$this->record->wx_string)
             $params['wx'] = str_replace(' ', '+', (string)$this->record->wx_string);
         if ((string)$this->record->flight_category) $params['fltcat'] = (string)$this->record->flight_category;
-        return bit_add_get_method($url, $params);
+        return _add_get_method($url, $params);
     }
 
     public function toModel() {
