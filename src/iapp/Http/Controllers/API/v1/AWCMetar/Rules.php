@@ -18,6 +18,13 @@ trait Rules
             case 'update':
                 $rules = [];
                 break;
+            case 'index':
+                $rules = [
+                    'startTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
+                    'endTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
+                    'stations.*' => ['nullable', 'string'],
+                ];
+                break;
         }
         return $rules;
     }

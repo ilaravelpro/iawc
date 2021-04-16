@@ -17,7 +17,7 @@ class AWCTafController extends Controller
     use Index,
         Show,
         AWCMetar\Rules,
-        AWCMetar\RequestData,
+        AWCTaf\RequestData,
         AWCTaf\FilterWithSTED,
         AWCMetar\Filters;
 }

@@ -7,41 +7,19 @@
 
 namespace iLaravel\iAWC\iApp\Http\Controllers\API\v1\AWCMetar;
 
-use Carbon\Carbon;
 use iLaravel\Core\iApp\Http\Requests\iLaravel as Request;
-use iLaravel\iAWC\Vendor\AviationWeather;
 
 trait FilterWithSTED
 {
     public function filterWithSTED(Request $request, $model, $parent = null, $filters = [], $operators = [])
     {
-        $start_time = $request->has('startTime') ? Carbon::parse(str_replace('/', '-', $request->startTime))->format('Y-m-d H:i:s') : null;
-        $end_time = $request->has('endTime') ? Carbon::parse(str_replace('/', '-', $request->endTime))->format('Y-m-d H:i:s') : null;
-        $request->validate([
-            'startTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
-            'endTime' => ['nullable', 'date_format:Y-m-d H:i:s'],
-        ]);
-        $stations = explode(',', $request->stationString);
-        $check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
-            if ($start_time) $query->orWhere('observation_at', '>', $start_time);
-            if ($end_time) $query->where('observation_at', '<', $end_time);
-            if ($request->stationString) $query->whereIn('station', $stations);
+        $model->where(function ($query) use ($request) {
+            if ($request->startTime) $query->orWhere('observation_at', '>', $request->startTime);
+            if ($request->endTime) $query->where('observation_at', '<', $request->endTime);
+            if ($request->stations) $query->whereIn('station', $request->stations);
             return $query;
         });
-        if ($check->get()->groupBy('station')->count() < count($stations)) {
-            $params = $request->all();
-            if (isset($params['startTime'])) $params['startTime'] = Carbon::parse($params['startTime'])->subDay()->timestamp;
-            if (isset($params['endTime'])) $params['endTime'] = Carbon::parse($params['endTime'])->subDay()->timestamp;
-            $params['format'] = 'model';
-            unset($params['limited']);
-            (new AviationWeather("metars", $params))->get();
-        }
-        $model->where(function ($query) use ($request, $start_time, $end_time, $stations) {
-            if ($start_time) $query->orWhere('observation_at', '>', $start_time);
-            if ($end_time) $query->where('observation_at', '<', $end_time);
-            if ($request->stationString) $query->whereIn('station', $stations);
-            return $query;
-        });
+        $stations = $request->stations;
         if ($request->limited) {
             foreach ($stations as $index => $station) {
                 if ($mstation = $this->model::where('station', $station)->orderBy('observation_at', 'desc')->first())
