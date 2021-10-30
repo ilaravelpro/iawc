@@ -14,8 +14,8 @@ trait FilterWithSTED
     public function filterWithSTED(Request $request, $model, $parent = null, $filters = [], $operators = [])
     {
         $model->where(function ($query) use ($request) {
-            if ($request->startTime) $query->orWhere('observation_at', '>', $request->startTime);
-            if ($request->endTime) $query->where('observation_at', '<', $request->endTime);
+            if ($request->startTime) $query->orWhere('observation_at', '>=', $request->startTime);
+            if ($request->endTime) $query->where('observation_at', '<=', $request->endTime);
             if ($request->stations) $query->whereIn('station', $request->stations);
             return $query;
         });

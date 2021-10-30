@@ -23,18 +23,19 @@ trait RequestData
             $data['endTime'] = $end_time;
             $stations = explode(',', $request->stationString);
             $data['stations'] = $stations;
-            $check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
-                if ($start_time) $query->orWhere('observation_at', '>', $start_time);
-                if ($end_time) $query->where('observation_at', '<', $end_time);
+            /*$check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
+                if ($start_time) $query->orWhere('observation_at', '>=', $start_time);
+                if ($end_time) $query->where('observation_at', '<=', $end_time);
                 if ($request->stationString) $query->whereIn('station', $stations);
                 return $query;
             });
             if ($check->get()->groupBy('station')->count() < count($stations)) {
-                $params = $request->all();
-                $params['format'] = 'model';
-                unset($params['limited']);
-                (new AviationWeather("metars", $params))->get();
-            }
+
+            }*/
+            $params = $request->all();
+            $params['format'] = 'model';
+            unset($params['limited']);
+            (new AviationWeather("metars", $params))->get();
         }
     }
 }

@@ -33,7 +33,7 @@ class AWCMetar extends Model
 
     public static function getByStation($station)
     {
-        return static::where('station', $station)->get();
+        return static::whereRaw("LOWER(station) = '".strtolower($station)."'")->get();
     }
 
 }

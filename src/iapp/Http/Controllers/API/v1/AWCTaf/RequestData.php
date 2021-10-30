@@ -10,6 +10,7 @@ namespace iLaravel\iAWC\iApp\Http\Controllers\API\v1\AWCTaf;
 use Carbon\Carbon;
 use iLaravel\Core\iApp\Http\Requests\iLaravel as Request;
 use iLaravel\iAWC\Vendor\AviationWeather;
+use Illuminate\Support\Facades\DB;
 
 trait RequestData
 {
@@ -22,9 +23,10 @@ trait RequestData
             $data['endTime'] = $end_time;
             $stations = explode(',', $request->stationString);
             $data['stations'] = $stations;
-            $check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
-                if ($start_time) $query->orWhere('start_at', '>', $start_time);
-                if ($end_time) $query->where('end_at', '<', $end_time);
+            \DB::enableQueryLog();
+            /*$check = $this->model::where(function ($query) use ($request, $start_time, $end_time, $stations) {
+                if ($start_time) $query->orWhere('start_at', '>=', $start_time);
+                if ($end_time) $query->where('end_at', '<=', $end_time);
                 if ($request->stationString) $query->whereIn('station', $stations);
                 return $query;
             });
@@ -33,7 +35,11 @@ trait RequestData
                 $params['format'] = 'model';
                 unset($params['limited']);
                 (new AviationWeather("tafs", $params))->get();
-            }
+            }*/
+            $params = $request->all();
+            $params['format'] = 'model';
+            unset($params['limited']);
+            (new AviationWeather("tafs", $params))->get();
         }
     }
 }
