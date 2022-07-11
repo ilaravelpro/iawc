@@ -103,6 +103,7 @@ class AWCMetar extends Modal
             "sky_condition" => _get_value($record, "sky_condition"),
             "precip" => _get_value($record, "precip"),
             "quality_control_flags" => _get_value($record, "quality_control_flags"),
+            "elevation" => _get_value($record, "elevation"),
             "observation_at" => Carbon::parse(_get_value($record, "observation_time"))->format('Y-m-d H:i:s'),
             "hash" => $hash
         ];
