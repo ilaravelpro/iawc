@@ -12,6 +12,10 @@ trait Construct
 {
     public function __construct($source = "metars", $params = [])
     {
+        $params_indexes = ['app_version'];
+        foreach ($params_indexes as $index) {
+            unset($params[$index]);
+        }
         if ($source) $this->params['dataSource'] = $source;
         if (is_array($params)) {
             $this->params = array_merge($this->params, $params);
