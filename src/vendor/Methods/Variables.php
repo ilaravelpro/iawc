@@ -10,7 +10,7 @@ namespace iLaravel\iAWC\Vendor\Methods;
 
 trait Variables
 {
-    private $service_url = "https://aviationweather.gov/adds/dataserver_current/httpparam";
+    private $service_url = "https://aviationweather.gov/cgi-bin/data/dataserver.php";
 
     public $params = [
         "page" => 1,
